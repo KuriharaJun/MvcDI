@@ -8,21 +8,24 @@ namespace MvcDI
     /// <summary>
     /// Serviceクラス注入対象識別用属性
     /// </summary>
-    [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = false)]
     public sealed class ImplementAttribute : Attribute
     {
         /// <summary>
         /// 実装型
         /// </summary>
-        readonly Type implementType;
+        readonly Type implementType = null;
+
+        readonly bool debug = false;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="implementType">本番環境実装型</param>
-        public ImplementAttribute(Type implementType)
+        public ImplementAttribute(Type implementType, bool debug)
         {
             this.implementType = implementType;
+            this.debug = debug;
         }
 
         /// <summary>
@@ -34,5 +37,10 @@ namespace MvcDI
         /// デバッグ環境実装型
         /// </summary>
         public Type DebugImplementType { get; set; }
+
+        /// <summary>
+        /// デバッグフラグ
+        /// </summary>
+        public bool Debug { get; private set; }
     }
 }
