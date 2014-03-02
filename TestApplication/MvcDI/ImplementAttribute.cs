@@ -31,7 +31,7 @@ namespace MvcDI
         /// <summary>
         /// 本番環境実装型
         /// </summary>
-        public Type ImplementType { get { return this.implementType; } private set; }
+        public Type ImplementType { get { return this.implementType; } }
 
         /// <summary>
         /// デバッグ環境実装型
