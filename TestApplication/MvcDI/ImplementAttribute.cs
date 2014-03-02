@@ -5,18 +5,21 @@ using System.Text;
 
 namespace MvcDI
 {
+    /// <summary>
+    /// Serviceクラス注入対象識別用属性
+    /// </summary>
     [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
     public sealed class ImplementAttribute : Attribute
     {
-        // See the attribute guidelines at 
-        //  http://go.microsoft.com/fwlink/?LinkId=85236
-
         /// <summary>
         /// 実装型
         /// </summary>
         readonly Type implementType;
 
-        // This is a positional argument
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="implementType">本番環境実装型</param>
         public ImplementAttribute(Type implementType)
         {
             this.implementType = implementType;
