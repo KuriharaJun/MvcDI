@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 using MvcDI;
 
@@ -22,7 +18,7 @@ namespace TestApplication
                 "{controller}/{action}/{id}", // パラメーター付きの URL
                 new { controller = "Test", action = "Index", id = UrlParameter.Optional } // パラメーターの既定値
             );
-
+            GlobalSetting.CommonMapRoute(routes);
         }
 
         protected void Application_Start()
@@ -30,13 +26,7 @@ namespace TestApplication
             AreaRegistration.RegisterAllAreas();
 
             RegisterRoutes(RouteTable.Routes);
-            RegistControllerFactory();
-        }
-
-        public static void RegistControllerFactory()
-        {
-            var factory = new MvcDIControllerFactory();
-            ControllerBuilder.Current.SetControllerFactory(factory);
+            GlobalSetting.RegistControllerFactory();
         }
     }
 }
