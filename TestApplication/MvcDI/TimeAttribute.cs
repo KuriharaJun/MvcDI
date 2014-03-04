@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MvcDI
+namespace MvcDI.Util
 {
     /// <summary>
     /// 時間入力形式チェック属性

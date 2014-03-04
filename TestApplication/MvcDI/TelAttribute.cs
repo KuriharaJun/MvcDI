@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MvcDI
+namespace MvcDI.Util
 {
     public class TelAttribute : RegularExpressionAttribute
     {
