@@ -1,13 +1,22 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Reflection;
+using System.Web;
+using System.Web.Mvc;
 using System.Web.Routing;
+using log4net;
 
 namespace MvcDI
 {
     /// <summary>
     /// 共通アプリケーション設定クラス
     /// </summary>
-    public class GlobalSetting
+    public class GlobalApplication : HttpApplication
     {
+        /// <summary>
+        /// ログ出力クラス
+        /// </summary>
+        protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// 共通ルート設定
         /// </summary>
@@ -28,7 +37,7 @@ namespace MvcDI
                 ).RouteHandler = new CssRouteHandler();
             routes.MapRoute(
                 "Image",
-                "Content/Image/{*imageName}",
+                "Content/images/{*imageName}",
                 null,
                 new { imageName = @"[\w]*\/[.|\w]*\.(jpg|jpeg|gif|png)" }
                 ).RouteHandler = new ImageRouteHandler();
@@ -46,6 +55,31 @@ namespace MvcDI
         {
             var factory = new MvcDIControllerFactory();
             ControllerBuilder.Current.SetControllerFactory(factory);
+        }
+
+        protected virtual void Application_Start()
+        {
+            AreaRegistration.RegisterAllAreas();
+            RegistControllerFactory();
+        }
+
+        /// <summary>
+        /// アプリケーションエラー発生時処理済みでない例外をキャッチする
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            var exception = Server.GetLastError();
+
+            if (exception == null)
+            {
+                return;
+            }
+            else
+            {
+                log.Fatal("システムエラー：", exception);
+            }
         }
     }
 }

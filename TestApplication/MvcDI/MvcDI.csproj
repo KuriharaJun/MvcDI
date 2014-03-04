@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Library\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -48,18 +52,19 @@
   <ItemGroup>
     <Compile Include="CssFileHandler.cs" />
     <Compile Include="CssRouteHandler.cs" />
-    <Compile Include="GlobalSetting.cs" />
+    <Compile Include="GlobalApplication.cs" />
     <Compile Include="ImageFileHandler.cs" />
     <Compile Include="ImageRouteHandler.cs" />
     <Compile Include="ImplementAttribute.cs" />
-    <Compile Include="MailAttribute.cs" />
+    <Compile Include="Util\MailAttribute.cs" />
     <Compile Include="MvcDIControllerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScriptFileHandler.cs" />
     <Compile Include="ScriptRoutHandler.cs" />
     <Compile Include="ServiceExtensions.cs" />
-    <Compile Include="TelAttribute.cs" />
-    <Compile Include="TimeAttribute.cs" />
+    <Compile Include="Util\TelAttribute.cs" />
+    <Compile Include="Util\TimeAttribute.cs" />
+    <Compile Include="Util\StringUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
