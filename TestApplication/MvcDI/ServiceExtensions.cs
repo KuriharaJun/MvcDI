@@ -1,4 +1,4 @@
-﻿using System.Transactions;
+﻿using System.Data.Common;
 
 namespace MvcDI
 {
@@ -10,7 +10,12 @@ namespace MvcDI
         /// <summary>
         /// トランザクション
         /// </summary>
-        TransactionScope tx { get; set; }
+        DbTransaction tx { get; set; }
+
+        /// <summary>
+        /// DBコネクション
+        /// </summary>
+        DbConnection con { get; set; }
     }
 
     /// <summary>
@@ -24,11 +29,7 @@ namespace MvcDI
         /// <param name="service"></param>
         public static void BeginTransaction(this IService service)
         {
-            service.tx = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions()
-            {
-                IsolationLevel= IsolationLevel.ReadCommitted,
-                Timeout = TransactionManager.DefaultTimeout
-            });
+            service.tx = service.con.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
         }
 
         /// <summary>
@@ -39,7 +40,7 @@ namespace MvcDI
         {
             try
             {
-                service.tx.Complete();
+                service.tx.Commit();
                 EndTransaction(service);
             }
             catch { }
@@ -53,6 +54,7 @@ namespace MvcDI
         {
             try
             {
+                service.tx.Rollback();
                 EndTransaction(service);
             }
             catch { }
