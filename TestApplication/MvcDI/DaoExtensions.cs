@@ -5,15 +5,14 @@ namespace MvcDI
 {
     public static class DaoExtensions
     {
-        public static SqlType ServerType { get; private set; }
-        public static DbCommand CommandTransaction(this IDao dao, DbTransaction tx)
+        public static DbCommand CommandTransaction(this IDao dao, DbTransaction tx, SqlType serverType)
         {
-            switch (ServerType)
+            switch (serverType)
             {
                 case SqlType.SqlServer:
                     {
                         var command = new SqlCommand();
-                        command.Connection = (SqlConnection)dao.con;
+                        command.Connection = (SqlConnection)dao.Con;
                         command.Transaction = (SqlTransaction)tx;
                         return command;
                     }
@@ -24,14 +23,14 @@ namespace MvcDI
             }
         }
 
-        public static DbCommand CommandNonTransaction(this IDao dao)
+        public static DbCommand CommandNonTransaction(this IDao dao, SqlType serverType)
         {
-            switch (ServerType)
+            switch (serverType)
             {
                 case SqlType.SqlServer:
                     {
                         var command = new SqlCommand();
-                        command.Connection = (SqlConnection) dao.con;
+                        command.Connection = (SqlConnection) dao.Con;
                         return command;
                     }
                 default:

@@ -10,12 +10,12 @@ namespace MvcDI
         /// <summary>
         /// トランザクション
         /// </summary>
-        DbTransaction tx { get; set; }
+        DbTransaction Tx { get; set; }
 
         /// <summary>
         /// DBコネクション
         /// </summary>
-        DbConnection con { get; set; }
+        DbConnection Con { get; }
     }
 
     /// <summary>
@@ -29,7 +29,7 @@ namespace MvcDI
         /// <param name="service"></param>
         public static void BeginTransaction(this IService service)
         {
-            service.tx = service.con.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+            service.Tx = service.Con.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace MvcDI
         {
             try
             {
-                service.tx.Commit();
+                service.Tx.Commit();
                 EndTransaction(service);
             }
             catch { }
@@ -54,7 +54,7 @@ namespace MvcDI
         {
             try
             {
-                service.tx.Rollback();
+                service.Tx.Rollback();
                 EndTransaction(service);
             }
             catch { }
@@ -68,7 +68,7 @@ namespace MvcDI
         {
             try
             {
-                service.tx.Dispose();
+                service.Tx.Dispose();
             }
             catch { }
         }

@@ -7,6 +7,6 @@ namespace MvcDI
         /// <summary>
         /// DB接続
         /// </summary>
-        DbConnection con { get; set; }
+        DbConnection Con { get; }
     }
 }
