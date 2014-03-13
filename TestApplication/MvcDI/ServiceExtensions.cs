@@ -1,4 +1,7 @@
-﻿using System.Data.Common;
+﻿using System;
+using System.Data.Common;
+using System.Reflection;
+using log4net;
 
 namespace MvcDI
 {
@@ -24,12 +27,21 @@ namespace MvcDI
     public static class ServiceExtensions
     {
         /// <summary>
+        /// ログ
+        /// </summary>
+        private static ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+
+        /// <summary>
         /// トランザクション開始処理
         /// </summary>
         /// <param name="service"></param>
         public static void BeginTransaction(this IService service)
         {
             service.Tx = service.Con.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+            if (log.IsInfoEnabled)
+            {
+                log.Info("Transaction start. IsolationLevel is ReadCommitted.");
+            }
         }
 
         /// <summary>
@@ -42,8 +54,15 @@ namespace MvcDI
             {
                 service.Tx.Commit();
                 EndTransaction(service);
+                if (log.IsInfoEnabled)
+                {
+                    log.Info("Commit success. Transaction close.");
+                }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                log.Fatal("Commit failed.", ex);
+            }
         }
 
         /// <summary>
@@ -56,8 +75,15 @@ namespace MvcDI
             {
                 service.Tx.Rollback();
                 EndTransaction(service);
+                if (log.IsInfoEnabled)
+                {
+                    log.Info("Rollback success. Transaction close.");
+                }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                log.Fatal("Rollback failed.", ex);
+            }
         }
 
         /// <summary>
@@ -69,8 +95,15 @@ namespace MvcDI
             try
             {
                 service.Tx.Dispose();
+                if (log.IsInfoEnabled)
+                {
+                    log.Info("Transaction dispose success.");
+                }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                log.Fatal("Transaction dispose fail.", ex);
+            }
         }
     }
 }
