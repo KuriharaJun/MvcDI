@@ -64,7 +64,7 @@ namespace MvcDI
             {
                 // 依存性注入対象の属性取得
                 var implAttr = field.GetCustomAttributes(typeof(ImplementAttribute), true);
-                if (implAttr != null)
+                if (implAttr != null && implAttr.Length > 0)
                 {
                     var attr = implAttr[0] as ImplementAttribute;
                     if (attr.Debug == false || attr.DebugImplementType == null)
