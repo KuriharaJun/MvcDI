@@ -63,6 +63,7 @@
     <Compile Include="ImageRouteHandler.cs" />
     <Compile Include="ImplementAttribute.cs" />
     <Compile Include="SqlType.cs" />
+    <Compile Include="StreamResult.cs" />
     <Compile Include="Util\MailAttribute.cs" />
     <Compile Include="MvcDIControllerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
