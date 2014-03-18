@@ -1,4 +1,7 @@
-﻿using System.Transactions;
+﻿using System;
+using System.Data.Common;
+using System.Reflection;
+using log4net;
 
 namespace MvcDI
 {
@@ -10,7 +13,12 @@ namespace MvcDI
         /// <summary>
         /// トランザクション
         /// </summary>
-        TransactionScope tx { get; set; }
+        DbTransaction Tx { get; set; }
+
+        /// <summary>
+        /// DBコネクション
+        /// </summary>
+        DbConnection Con { get; }
     }
 
     /// <summary>
@@ -19,16 +27,21 @@ namespace MvcDI
     public static class ServiceExtensions
     {
         /// <summary>
+        /// ログ
+        /// </summary>
+        private static ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        /// <summary>
         /// トランザクション開始処理
         /// </summary>
         /// <param name="service"></param>
         public static void BeginTransaction(this IService service)
         {
-            service.tx = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions()
+            service.Tx = service.Con.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+            if (log.IsInfoEnabled)
             {
-                IsolationLevel= IsolationLevel.ReadCommitted,
-                Timeout = TransactionManager.DefaultTimeout
-            });
+                log.Info("Transaction start. IsolationLevel is ReadCommitted.");
+            }
         }
 
         /// <summary>
@@ -39,10 +52,17 @@ namespace MvcDI
         {
             try
             {
-                service.tx.Complete();
+                service.Tx.Commit();
                 EndTransaction(service);
+                if (log.IsInfoEnabled)
+                {
+                    log.Info("Commit success. Transaction close.");
+                }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                log.Fatal("Commit failed.", ex);
+            }
         }
 
         /// <summary>
@@ -53,9 +73,17 @@ namespace MvcDI
         {
             try
             {
+                service.Tx.Rollback();
                 EndTransaction(service);
+                if (log.IsInfoEnabled)
+                {
+                    log.Info("Rollback success. Transaction close.");
+                }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                log.Fatal("Rollback failed.", ex);
+            }
         }
 
         /// <summary>
@@ -66,9 +94,16 @@ namespace MvcDI
         {
             try
             {
-                service.tx.Dispose();
+                service.Tx.Dispose();
+                if (log.IsInfoEnabled)
+                {
+                    log.Info("Transaction dispose success.");
+                }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                log.Fatal("Transaction dispose fail.", ex);
+            }
         }
     }
 }

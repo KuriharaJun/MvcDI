@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Data.Common;
 using System.Text;
-using System.Reflection;
 
 namespace MvcDI.Util
 {
@@ -12,11 +9,21 @@ namespace MvcDI.Util
     public class StringUtil
     {
         /// <summary>
-        /// ToString表示内容生成
+        /// objectをToStringして返却する
         /// </summary>
         /// <param name="o"></param>
         /// <returns></returns>
         public static string ToStringBuilder(object o)
+        {
+            return o.ToString();
+        }
+
+        /// <summary>
+        /// ToString表示内容生成
+        /// </summary>
+        /// <param name="o"></param>
+        /// <returns></returns>
+        public static string ToStringModel(object o)
         {
             var sb = new StringBuilder();
             var t = o.GetType();
@@ -45,6 +52,24 @@ namespace MvcDI.Util
                 }
             }
             sb.Append(")");
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// SQL情報出力ToString
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        public static string ToStringSqlBuilder(DbCommand command)
+        {
+            var sb = new StringBuilder();
+            sb.AppendFormat("実行SQL：{0} ", command.CommandText);
+            sb.Append("パラメータ： ");
+            foreach (DbParameter param in command.Parameters)
+            {
+                sb.AppendFormat("{0} [{1}] ", param.ParameterName, param.Value);
+            }
+
             return sb.ToString();
         }
     }

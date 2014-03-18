@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Reflection;
 using System.Web.Mvc;
+using log4net;
 
 namespace MvcDI
 {
@@ -9,6 +11,11 @@ namespace MvcDI
     public class MvcDIControllerFactory : DefaultControllerFactory
     {
         /// <summary>
+        /// ログ
+        /// </summary>
+        private static ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        /// <summary>
         /// コントローラのインスタンス生成を制御
         /// </summary>
         /// <param name="requestContext"></param>
@@ -16,11 +23,31 @@ namespace MvcDI
         /// <returns></returns>
         public override IController CreateController(System.Web.Routing.RequestContext requestContext, string controllerName)
         {
+            if (log.IsInfoEnabled)
+            {
+                log.Info("Create controller instance name is " + controllerName);
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug("RequestContext: " + requestContext.ToString());
+                }
+            }
+
             var controllerType = base.GetControllerType(requestContext, controllerName);
+            if (log.IsDebugEnabled)
+            {
+                if (controllerType != null)
+                {
+                    log.Debug("ControllerType: " + controllerType.ToString());
+                }
+                else
+                {
+                    log.Debug("ControllerType is null.");
+                }
+            }
             var controllerInstance = base.GetControllerInstance(requestContext, controllerType);
 
             // Implement属性を参照してServiceのインジェクション
-            InjectService(controllerInstance);
+            this.InjectService(controllerInstance);
 
             return controllerInstance;
         }
@@ -45,12 +72,28 @@ namespace MvcDI
                         // 本番環境用インスタンスの生成
                         var impleInstance = Activator.CreateInstance(attr.ImplementType);
                         field.SetValue(controller, impleInstance);
+                        if (log.IsInfoEnabled)
+                        {
+                            log.Info("Staging instance is created.");
+                            if (log.IsDebugEnabled)
+                            {
+                                log.Debug("Create instance type is " + impleInstance.GetType().Name);
+                            }
+                        }
                     }
                     else
                     {
                         // デバッグ環境用インスタンスの生成
                         var debugInstance = Activator.CreateInstance(attr.DebugImplementType);
                         field.SetValue(controller, debugInstance);
+                        if (log.IsInfoEnabled)
+                        {
+                            log.Info("Debug instance is created.");
+                            if (log.IsDebugEnabled)
+                            {
+                                log.Debug("Create instance type is " + debugInstance.GetType().Name);
+                            }
+                        }
                     }
                 }
             }
