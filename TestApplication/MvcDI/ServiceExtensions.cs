@@ -29,7 +29,7 @@ namespace MvcDI
         /// <summary>
         /// ログ
         /// </summary>
-        private static ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        private static ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// トランザクション開始処理
